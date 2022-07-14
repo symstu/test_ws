@@ -18,6 +18,9 @@ class WebsocketRoom:
         self.websockets = dict()
 
     async def publish(self, message: dict):
+        if not self.websockets:
+            return
+
         coroutines = []
 
         for websocket in self.websockets.values():

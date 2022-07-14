@@ -9,9 +9,13 @@ from utils.websockets import BaseConsumer
 
 class TimerConsumer(BaseConsumer):
     async def on_connect(self):
+        print(1)
         self.room.user_add(self.websocket)
+        print(2)
         events = await Timer.all()
+        print(3)
         await self.websocket.send_json(outputs.ConnectEvent(data=events).dict())
+        print(4)
 
     async def on_toggle(self, data):
         timestamp = Timer.time()

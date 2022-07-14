@@ -38,6 +38,8 @@
             padding: var(--padding);
             border: var(--border);
             background-color: lightcyan;
+            display: flex;
+            justify-content: center;
         }
         .btn:hover {
             background-color: lightcoral;
@@ -80,7 +82,8 @@
                     case 101: app.methods.addRecord(data.data);
                     break;
 
-                    case 102: console.log('updated ', data.data);
+                    case 102: app.methods.updateLastRecord(data.data);
+                    break;
                 }
             },
             toggleTimer: function () {
@@ -117,6 +120,19 @@
                     newRow.appendChild(value)
                 })
                 app.data.table.appendChild(newRow);
+            },
+            updateLastRecord: function (data) {
+                console.log(data);
+                let lastChild = app.data.table.lastChild;
+                lastChild.childNodes[0].innerText = data.timestamp;
+                lastChild.childNodes[1].innerText = data.timer;
+                lastChild.childNodes[2].innerText = data.event;
+
+                app.methods.setButton(data.event);
+            },
+            setButton: function (event) {
+                app.data.button.innerText = event === 'started' ? 'STOP' : 'START';
+                app.data.timerState = event === 'started';
             }
         }
     };

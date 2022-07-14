@@ -1,5 +1,4 @@
 import typing
-from datetime import datetime, time
 from pydantic import BaseModel, validator
 
 
@@ -8,9 +7,13 @@ class TimeLog(BaseModel):
     event: str
     timer: str
 
-    @validator('timestamp', 'timer', pre=True)
-    def to_str(cls, value):
+    @validator('timestamp', pre=True)
+    def datetime_to_str(cls, value):
         return value.isoformat()
+
+    @validator('timer', pre=True)
+    def timedelta_to_str(cls, value):
+        return str(value)
 
 
 class ConnectEvent(BaseModel):
