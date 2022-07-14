@@ -1,31 +1,13 @@
-import asyncio
+from fastapi import FastAPI
+
+from views.main.router import init as main_router
+from views.main.on_startup import start_timer
+
+app = FastAPI()
+main_router(app)
 
 
-class WebsocketRoom:
-    def __init__(self):
-        self.websockets = dict()
-
-    async def publish(self, message: dict):
-        coroutines = []
-
-        for websocket in self.websockets.values():
-            coroutines.append(websocket.send_json(message))
-
-        await asyncio.gather(*coroutines)
-
-    async def send(self, websocket, message: dict):
-        await websocket.send_json(message)
-
-    def user_add(self, websocket):
-        self.websockets[self.__user_key(websocket)] = websocket
-
-    def reset(self):
-        self.websockets = dict()
-
-    def user_remove(self, websocket):
-        self.websockets.pop(self.__user_key(websocket))
-
-    @staticmethod
-    def __user_key(websocket):
-        return f'{websocket.client.host}:{websocket.client.port}'\
-               f':{websocket.query_params}'
+@app.on_event('startup')
+async def run():
+    from utils.websockets import room
+    await start_timer(room)

@@ -1,4 +1,5 @@
 import asyncpg
+from contextlib import asynccontextmanager
 
 from settings import config
 
@@ -8,6 +9,7 @@ class PgPool():
         self.__pool = None
         self.dsn = dsn
 
+    @asynccontextmanager
     async def __call__(self):
         if not self.__pool:
             self.__pool = await asyncpg.create_pool(
