@@ -16,12 +16,24 @@ class EventType(int, Enum):
 class Timer(Base):
     __tablename__ = 'timers'
 
-    id: int = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    id: int = sa.Column(
+        sa.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
     event: int = sa.Column(
-        sa.Integer, nullable=False, server_default=f'{EventType.started.value}')
+        sa.Integer,
+        nullable=False,
+        server_default=f'{EventType.started.value}'
+    )
     timestamp: datetime = sa.Column(
-        sa.DateTime, server_default=text('current_timestamp'))
-    timer: time = sa.Column(sa.Time, nullable=False)
+        sa.DateTime,
+        server_default=text('current_timestamp')
+    )
+    timer: time = sa.Column(
+        sa.Time,
+        nullable=False
+    )
 
     @classmethod
     async def all(cls):
@@ -39,11 +51,28 @@ class Timer(Base):
         return datetime.utcnow()
 
     @classmethod
-    async def update(cls, event: int, timestamp: time):
+    async def create(cls, timestamp: time):
         async with adb_session() as conn:
             return await conn.execute(
-                'INSERT INTO timers (event, timestamp, timer) VALUES ($1, $2, $3)',
-                event,
+                '''
+                INSERT INTO timers (event, timestamp, timer) 
+                VALUES ($1, $2, $3)
+                ''',
+                1,
                 timestamp,
                 time.fromisoformat('00:00:00')
+            )
+
+    @classmethod
+    async def stop(cls, record_id: int, timestamp: time):
+        async with adb_session() as conn:
+            return await conn.execute(
+                '''
+                UPDATE timers 
+                SET event = 0, 
+                    timer = $1::timestamp - timestamp
+                WHERE id = $2
+                ''',
+                timestamp,
+                record_id
             )

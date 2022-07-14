@@ -20,7 +20,7 @@ class TimerManager:
 
     async def stop(self, room, timestamp):
         await room.publish(outputs.UpdateEvent(data={
-            'timestamp': timestamp,
+            'timestamp': self.timestamp,
             'timer': self.__get_time(timestamp, self.timestamp),
             'event': 'stopped'
         }).dict())
@@ -47,7 +47,7 @@ class TimerManager:
             logger.info(f'updated timer: {data}')
 
     def __get_time(self, timestamp_now, timestamp_before):
-        return datetime.fromtimestamp((timestamp_now - timestamp_before).seconds)
+        return timestamp_now - timestamp_before
 
 
 timer_manager = TimerManager()
