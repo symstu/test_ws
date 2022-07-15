@@ -1,0 +1,21 @@
+[Unit]
+Description=WS TEST
+After=postgresql.service
+Requires=postgresql.service
+PartOf=postgresql.service
+StartLimitIntervalSec=0
+
+OnFailure=postgresql.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ubuntu
+KillSignal=SIGQUIT
+WorkingDirectory=/home/ubuntu/test_ws
+ExecStart=/home/ubuntu/test_ws/bin/uvicorn server:app --host 127.0.0.1 --port 6868 --workers 1 --log-level debug
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
