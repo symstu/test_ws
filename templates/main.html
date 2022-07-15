@@ -85,7 +85,6 @@
                 }
             },
             toggleTimer: function () {
-                console.log('toggle', app.data.timerState);
                 app.data.timerState ^= true;
 
                 app.methods.sendJson({
@@ -120,7 +119,6 @@
                 app.data.table.appendChild(newRow);
             },
             updateLastRecord: function (data) {
-                console.log(data);
                 let lastChild = app.data.table.lastChild;
                 lastChild.childNodes[0].innerText = data.timestamp;
                 lastChild.childNodes[1].innerText = data.timer;
@@ -135,7 +133,7 @@
         }
     };
     (function (){
-        app.methods.init('ws://localhost:8000/timer');
+        app.methods.init('ws://{{ host }}/timer');
         app.data.button.addEventListener('click', app.handlers.toggleTimer, true);
     }());
 </script>
