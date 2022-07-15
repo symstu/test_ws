@@ -14,25 +14,20 @@ class TimerConsumer(BaseConsumer):
             outputs.ConnectEvent(data=events).dict())
 
     async def on_toggle(self, data):
-        print('toggle')
         timestamp = Timer.time()
         event_type = 1
 
         last_timer = await Timer.last()
 
-        print('toggle 1')
         if last_timer and last_timer['event']:
             event_type = 0
 
         if event_type:
             timer_manager.run(self.room, timestamp)
             asyncio.create_task(Timer.create(timestamp))
-            print('current loop id', id(asyncio.get_event_loop()))
-            print('toggle 2')
         else:
             await timer_manager.stop(self.room, timestamp)
             asyncio.create_task(Timer.stop(last_timer['id'], timestamp))
-            print('toggle 3')
 
     async def on_disconnect(self):
         self.room.user_remove(self.websocket)
