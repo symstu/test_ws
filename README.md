@@ -24,3 +24,8 @@ uvicorn server:app --reload
 ```bash
 pytest views -s --vv --pdb
 ```
+
+
+----
+Note: this app allows only one app-worker. For horizontal scaling we need to
+add sync with the redis.
