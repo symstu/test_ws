@@ -76,3 +76,8 @@ class Timer(Base):
                 timestamp,
                 record_id
             )
+
+    @classmethod
+    async def delete(cls):
+        async with adb_session() as conn:
+            return await conn.execute('DELETE FROM timers')

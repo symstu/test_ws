@@ -29,6 +29,9 @@ class TimerConsumer(BaseConsumer):
             await timer_manager.stop(self.room, timestamp)
             asyncio.create_task(Timer.stop(last_timer['id'], timestamp))
 
+    async def on_clear(self, data):
+        await Timer.delete()
+
     async def on_disconnect(self):
         self.room.user_remove(self.websocket)
 
