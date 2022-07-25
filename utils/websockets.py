@@ -51,7 +51,7 @@ class WebsocketError(BaseModel):
 
 
 class BaseConsumer:
-    def __init__(self, room,websocket):
+    def __init__(self, room, websocket):
         self.websocket: WebSocket = websocket
         self.room = room
 
